@@ -7,19 +7,13 @@ from Tasks.task_service import (
 )
 from database.db import create_tables
 
-
-# ----------------------------
 # INITIAL SETUP
-# ----------------------------
 def start_app():
     create_tables()
     print("\n🚀 Task Manager CLI")
     print("Type 'help' for available commands\n")
 
-
-# ----------------------------
 # AUTH MENU
-# ----------------------------
 def auth_menu():
     while True:
         print("\n===== AUTH MENU =====")
@@ -55,9 +49,7 @@ def auth_menu():
             print("❌ Invalid option")
 
 
-# ----------------------------
 # TASK MENU
-# ----------------------------
 def task_menu():
     user = get_current_user()
     while user:
