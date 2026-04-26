@@ -44,11 +44,38 @@ def create_tables():
             CREATE TABLE IF NOT EXISTS tasks (
                 id SERIAL PRIMARY KEY,
                 title TEXT NOT NULL,
+                description TEXT,
                 completed BOOLEAN DEFAULT FALSE,
+                priority VARCHAR(20) DEFAULT 'medium',
+                due_date TIMESTAMP,
+                reminder_date TIMESTAMP,
+                archived BOOLEAN DEFAULT FALSE,
                 user_id INTEGER,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            );
+        """)
+
+        # TAGS TABLE
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tags (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) UNIQUE NOT NULL,
+                user_id INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            );
+        """)
+
+        # TASK_TAGS JUNCTION TABLE
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS task_tags (
+                task_id INTEGER,
+                tag_id INTEGER,
+                PRIMARY KEY (task_id, tag_id),
+                FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+                FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
             );
         """)
 
