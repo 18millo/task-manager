@@ -1,4 +1,4 @@
-from Authentication.auth_service import register_user, login_user, logout, get_current_user
+from Authentication.auth_service import register_user, login_user, logout, get_current_user, delete_account
 from Tasks.task_service import create_task, get_tasks, update_task, delete_task
 from database.db import create_tables
 
@@ -55,6 +55,7 @@ def task_menu():
         print("3. Update Task")
         print("4. Delete Task")
         print("5. Logout")
+        print("6. Delete Account")
 
         choice = input("Select option: ")
 
@@ -88,6 +89,11 @@ def task_menu():
         elif choice == "5":
             logout()
             break
+
+        elif choice == "6":
+            password = input("Enter your password to confirm: ")
+            if delete_account(password):
+                break
 
         else:
             print("❌ Invalid option")

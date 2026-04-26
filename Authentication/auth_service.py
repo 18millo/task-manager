@@ -84,3 +84,55 @@ def logout():
 
 def get_current_user():
     return current_user
+
+def delete_account(password):
+    global current_user
+
+    if not current_user:
+        print("No user logged in")
+        return False
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT password
+            FROM users
+            WHERE id = %s;
+        """, (current_user["id"],))
+
+        user = cursor.fetchone()
+
+        if not user:
+            print("User not found")
+            return False
+
+        hashed_password = user[0]
+
+        if isinstance(hashed_password, str) and hashed_password.startswith('\\x'):
+            hashed_password = bytes.fromhex(hashed_password[2:])
+
+        if not check_password(password, hashed_password):
+            print("Incorrect password")
+            return False
+
+        cursor.execute("""
+            DELETE FROM users
+            WHERE id = %s;
+        """, (current_user["id"],))
+
+        conn.commit()
+
+        current_user = None
+        print("✅ Account deleted successfully")
+        return True
+
+    except Exception as e:
+        print("Error deleting account:", e)
+        conn.rollback()
+        return False
+
+    finally:
+        cursor.close()
+        conn.close()
